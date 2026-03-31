@@ -1,5 +1,4 @@
 const { Client, GatewayIntentBits, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-require('dotenv').config();
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds]
@@ -28,7 +27,7 @@ client.on('interactionCreate', async interaction => {
     const embed = new EmbedBuilder()
       .setTitle('📜 𝘼𝙎𝙊𝙎𝙄𝘼𝙎𝙄 𝙋𝙇𝙀𝙉𝙂𝙀𝙍 𝙍𝙐𝙇𝙀𝙎')
       .setDescription(
-        `**Welcome to ASSPLR Server!**
+        `**Welcome to NINJA Server!**
 
 Harap membaca dan memahami semua aturan berikut.
 Dengan masuk ke server ini, kamu dianggap setuju dengan semua rules yang berlaku.
@@ -70,5 +69,5 @@ Dengan masuk ke server ini, kamu dianggap setuju dengan semua rules yang berlaku
   }
 });
 
-// LOGIN
+// LOGIN (ambil dari Railway Variables)
 client.login(process.env.TOKEN);
