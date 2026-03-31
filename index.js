@@ -10,7 +10,7 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds]
 });
 
-const CHANNEL_ID = 'ISI_CHANNEL_ID_LO';
+const CHANNEL_ID = '1488135944371572866';
 
 client.once('ready', async () => {
   const channel = await client.channels.fetch(CHANNEL_ID);
