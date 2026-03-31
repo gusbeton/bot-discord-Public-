@@ -117,58 +117,53 @@ client.once('ready', async () => {
 client.on('interactionCreate', async interaction => {
   if (!interaction.isStringSelectMenu()) return;
 
+  const rolesMap = {
+    among: '1488435375725740172',
+    aov: '1488435756350308443',
+    apexm: '1488434903732195418',
+    ff: '1488435095814803486',
+    gi: '1488435159198859304',
+    lolm: '1488435269081239623',
+    ml: '1488435375725740172',
+    pbm: '1488435629011374120',
+    pubgm: '1488435756350308443',
+    sausage: '1488435820560912434',
+    supers: '1488441075680153680',
+    stumble: '1488435872826130593',
+    hok: '1488436005139644426',
+    codm: '1488435039275319356',
+
+    apexl: '1488432911290994769',
+    cs2: '1488433170876600360',
+    dota2: '1488433456252850297',
+    ft: '1488433517049417728',
+    gtav: '1488433623588802630',
+    lolpc: '1488433735966920734',
+    mc: '1488433861905092668',
+    pb: '1488434230143881398',
+    pubg: '1488434320308965546',
+    r6: '1488434488064086117',
+    vl: '1488434562114785371'
+  };
+
   const member = interaction.member;
-  const selectedRole = interaction.values[0];
 
-  // 🔥 SEMUA ROLE GAME (WAJIB MASUKIN SEMUA)
-  const allRoles = [
-    // MOBILE
-    '1488435375725740172',
-    '1488435756350308443',
-    '1488434903732195418',
-    '1488435095814803486',
-    '1488435159198859304',
-    '1488435269081239623',
-    '1488435629011374120',
-    '1488435820560912434',
-    '1488441075680153680',
-    '1488435872826130593',
-    '1488436005139644426',
-    '1488435039275319356',
+  for (const val of interaction.values) {
+    const roleId = rolesMap[val];
+    const role = interaction.guild.roles.cache.get(roleId);
+    if (!role) continue;
 
-    // PC
-    '1488432911290994769',
-    '1488433170876600360',
-    '1488433456252850297',
-    '1488433517049417728',
-    '1488433623588802630',
-    '1488433735966920734',
-    '1488433861905092668',
-    '1488434230143881398',
-    '1488434320308965546',
-    '1488434488064086117',
-    '1488434562114785371'
-  ];
-
-  try {
-    // ❌ REMOVE SEMUA ROLE GAME
-    await member.roles.remove(allRoles);
-
-    // ✅ TAMBAH ROLE BARU
-    await member.roles.add(selectedRole);
-
-    await interaction.reply({
-      content: `✅ Role berhasil diganti!`,
-      ephemeral: true
-    });
-
-  } catch (err) {
-    console.error(err);
-    await interaction.reply({
-      content: `❌ Gagal mengganti role`,
-      ephemeral: true
-    });
+    if (member.roles.cache.has(roleId)) {
+      await member.roles.remove(role);
+    } else {
+      await member.roles.add(role);
+    }
   }
+
+  await interaction.reply({
+    content: '✅ Role updated!',
+    ephemeral: true
+  });
 });
 
 client.login(process.env.TOKEN);
