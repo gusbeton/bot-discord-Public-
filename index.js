@@ -10,24 +10,9 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds]
 });
 
-const CHANNEL_ID = '1488135944371572866';
+const CHANNEL_ID = 'ISI_CHANNEL_ID_LO';
 
-// READY
 client.once('ready', async () => {
-  console.log(`Login sebagai ${client.user.tag}`);
-
-  const activities = [
-    { name: '🎮 Game Roles', type: 0 },
-    { name: '✨ Choose Your Game', type: 3 },
-    { name: '🔥 Gaming Community', type: 0 }
-  ];
-
-  let i = 0;
-  setInterval(() => {
-    client.user.setActivity(activities[i]);
-    i = (i + 1) % activities.length;
-  }, 4000);
-
   const channel = await client.channels.fetch(CHANNEL_ID);
 
   const messages = await channel.messages.fetch({ limit: 10 });
@@ -38,32 +23,28 @@ client.once('ready', async () => {
   const embed = new EmbedBuilder()
     .setColor('#5865F2')
     .setTitle('🎮 SERVER ROLE GAMES')
-    .setDescription(
-`✨ Pilih role game kamu di bawah
+    .setDescription(`Pilih role game kamu di dropdown bawah 🔥`)
+    .setFooter({ text: 'Gaming Role System' });
 
-📱 **Mobile Games**
-💻 **PC Games**
-
-> Bisa pilih lebih dari 1 role
-> Klik lagi untuk remove`
-    )
-    .setFooter({ text: 'Auto Role System • Gaming Server' })
-    .setTimestamp();
-
-  // MOBILE FULL
-  const mobileMenu = new StringSelectMenuBuilder()
-    .setCustomId('mobile-role')
-    .setPlaceholder('📱 Pilih Mobile Game')
-    .setMinValues(0)
-    .setMaxValues(5)
+  // 📱 MOBILE 1
+  const mobile1 = new StringSelectMenuBuilder()
+    .setCustomId('mobile1')
+    .setPlaceholder('📱 Mobile Games (1)')
     .addOptions([
       { label: 'Among Us', value: 'among', emoji: '<:among:1488232855724101853>' },
-      { label: 'Arena of Valor', value: 'aov', emoji: '<:aov:1488232953292001452>' },
+      { label: 'AOV', value: 'aov', emoji: '<:aov:1488232953292001452>' },
       { label: 'Apex Mobile', value: 'apexm', emoji: '<:apexm:1488233017087492167>' },
       { label: 'Free Fire', value: 'ff', emoji: '<:ff:1488233144732876820>' },
-      { label: 'Genshin Impact', value: 'gi', emoji: '<:gi:1488233389638156391>' },
+      { label: 'Genshin', value: 'gi', emoji: '<:gi:1488233389638156391>' },
       { label: 'League Mobile', value: 'lolm', emoji: '<:lol:1488233476292608171>' },
-      { label: 'Mobile Legends', value: 'ml', emoji: '<:ml:1488225517113966673>' },
+      { label: 'Mobile Legends', value: 'ml', emoji: '<:ml:1488225517113966673>' }
+    ]);
+
+  // 📱 MOBILE 2
+  const mobile2 = new StringSelectMenuBuilder()
+    .setCustomId('mobile2')
+    .setPlaceholder('📱 Mobile Games (2)')
+    .addOptions([
       { label: 'Point Blank Mobile', value: 'pbm', emoji: '<:pu:1488233568042750144>' },
       { label: 'PUBG Mobile', value: 'pubgm', emoji: '<:pubgm:1488233818153418824>' },
       { label: 'Sausage Man', value: 'sausage', emoji: '<:sausage:1488233909241118721>' },
@@ -73,41 +54,39 @@ client.once('ready', async () => {
       { label: 'COD Mobile', value: 'codm', emoji: '<:codm:1488233107642515496>' }
     ]);
 
-  // PC FULL
-  const pcMenu = new StringSelectMenuBuilder()
-    .setCustomId('pc-role')
-    .setPlaceholder('💻 Pilih PC Game')
-    .setMinValues(0)
-    .setMaxValues(5)
+  // 💻 PC
+  const pc = new StringSelectMenuBuilder()
+    .setCustomId('pc')
+    .setPlaceholder('💻 PC Games')
     .addOptions([
       { label: 'Apex Legends', value: 'apexl', emoji: '<:apexl:1488234574109610096>' },
       { label: 'CS2', value: 'cs2', emoji: '<:cs2:1488229246441754744>' },
       { label: 'Dota 2', value: 'dota2', emoji: '<:dt:1488225450865066064>' },
       { label: 'Fortnite', value: 'ft', emoji: '<:ft:1488229574780391434>' },
       { label: 'GTA V', value: 'gtav', emoji: '<:gtav:1488229820977516666>' },
-      { label: 'League of Legends', value: 'lolpc', emoji: '<:lol:1488230038808821851>' },
+      { label: 'League PC', value: 'lolpc', emoji: '<:lol:1488230038808821851>' },
       { label: 'Minecraft', value: 'mc', emoji: '<:mc:1488230360260284488>' },
       { label: 'Point Blank', value: 'pb', emoji: '<:pb:1488230516355240037>' },
       { label: 'PUBG PC', value: 'pubg', emoji: '<:pubg:1488230934602973325>' },
-      { label: 'Rainbow Six', value: 'r6', emoji: '<:r6:1488231298135752748>' },
+      { label: 'R6', value: 'r6', emoji: '<:r6:1488231298135752748>' },
       { label: 'Valorant', value: 'vl', emoji: '<:vl:1488225389724700724>' }
     ]);
 
-  const row1 = new ActionRowBuilder().addComponents(mobileMenu);
-  const row2 = new ActionRowBuilder().addComponents(pcMenu);
+  const row1 = new ActionRowBuilder().addComponents(mobile1);
+  const row2 = new ActionRowBuilder().addComponents(mobile2);
+  const row3 = new ActionRowBuilder().addComponents(pc);
 
   await channel.send({
     embeds: [embed],
-    components: [row1, row2]
+    components: [row1, row2, row3]
   });
 });
 
-// ROLE HANDLER
+// ROLE MAP (SAMA)
 client.on('interactionCreate', async interaction => {
   if (!interaction.isStringSelectMenu()) return;
 
   const rolesMap = {
-    // MOBILE
     among: '1488435375725740172',
     aov: '1488435756350308443',
     apexm: '1488434903732195418',
@@ -123,7 +102,6 @@ client.on('interactionCreate', async interaction => {
     hok: '1488436005139644426',
     codm: '1488435039275319356',
 
-    // PC
     apexl: '1488432911290994769',
     cs2: '1488433170876600360',
     dota2: '1488433456252850297',
@@ -152,7 +130,7 @@ client.on('interactionCreate', async interaction => {
   }
 
   await interaction.reply({
-    content: '✅ Role kamu berhasil diupdate!',
+    content: '✅ Role updated!',
     ephemeral: true
   });
 });
