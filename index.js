@@ -2,54 +2,67 @@ const {
   Client,
   GatewayIntentBits,
   ActionRowBuilder,
-  StringSelectMenuBuilder
+  StringSelectMenuBuilder,
+  EmbedBuilder
 } = require('discord.js');
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds]
 });
 
-// GANTI CHANNEL ID
-const CHANNEL_ID = '1488135944371572866';
+const CHANNEL_ID = 'ISI_CHANNEL_ID_LO';
 
 // READY
 client.once('ready', async () => {
   console.log(`Login sebagai ${client.user.tag}`);
 
-  // STATUS AUTO
   const activities = [
-    { name: 'Pilih Role 🎮', type: 3 },
-    { name: 'Server Games 🔥', type: 0 }
+    { name: '🎮 Game Roles', type: 0 },
+    { name: '✨ Choose Your Game', type: 3 },
+    { name: '🔥 Gaming Community', type: 0 }
   ];
 
   let i = 0;
   setInterval(() => {
     client.user.setActivity(activities[i]);
     i = (i + 1) % activities.length;
-  }, 5000);
+  }, 4000);
 
   const channel = await client.channels.fetch(CHANNEL_ID);
 
-  // CEK BIAR GAK DOUBLE
   const messages = await channel.messages.fetch({ limit: 10 });
   const botMessage = messages.find(m => m.author.id === client.user.id);
+  if (botMessage) return;
 
-  if (botMessage) {
-    console.log('Sudah ada dropdown, skip...');
-    return;
-  }
+  // EMBED
+  const embed = new EmbedBuilder()
+    .setColor('#5865F2')
+    .setTitle('🎮 SERVER ROLE GAMES')
+    .setDescription(
+`✨ Pilih role game kamu di bawah
 
-  // 📱 MOBILE
+📱 **Mobile Games**
+💻 **PC Games**
+
+> Bisa pilih lebih dari 1 role
+> Klik lagi untuk remove`
+    )
+    .setFooter({ text: 'Auto Role System • Gaming Server' })
+    .setTimestamp();
+
+  // MOBILE FULL
   const mobileMenu = new StringSelectMenuBuilder()
     .setCustomId('mobile-role')
-    .setPlaceholder('📱 Mobile Games')
+    .setPlaceholder('📱 Pilih Mobile Game')
+    .setMinValues(0)
+    .setMaxValues(5)
     .addOptions([
       { label: 'Among Us', value: 'among', emoji: '<:among:1488232855724101853>' },
       { label: 'Arena of Valor', value: 'aov', emoji: '<:aov:1488232953292001452>' },
       { label: 'Apex Mobile', value: 'apexm', emoji: '<:apexm:1488233017087492167>' },
       { label: 'Free Fire', value: 'ff', emoji: '<:ff:1488233144732876820>' },
       { label: 'Genshin Impact', value: 'gi', emoji: '<:gi:1488233389638156391>' },
-      { label: 'League of Legends', value: 'lolm', emoji: '<:lol:1488233476292608171>' },
+      { label: 'League Mobile', value: 'lolm', emoji: '<:lol:1488233476292608171>' },
       { label: 'Mobile Legends', value: 'ml', emoji: '<:ml:1488225517113966673>' },
       { label: 'Point Blank Mobile', value: 'pbm', emoji: '<:pu:1488233568042750144>' },
       { label: 'PUBG Mobile', value: 'pubgm', emoji: '<:pubgm:1488233818153418824>' },
@@ -60,10 +73,12 @@ client.once('ready', async () => {
       { label: 'COD Mobile', value: 'codm', emoji: '<:codm:1488233107642515496>' }
     ]);
 
-  // 💻 PC
+  // PC FULL
   const pcMenu = new StringSelectMenuBuilder()
     .setCustomId('pc-role')
-    .setPlaceholder('💻 PC Games')
+    .setPlaceholder('💻 Pilih PC Game')
+    .setMinValues(0)
+    .setMaxValues(5)
     .addOptions([
       { label: 'Apex Legends', value: 'apexl', emoji: '<:apexl:1488234574109610096>' },
       { label: 'CS2', value: 'cs2', emoji: '<:cs2:1488229246441754744>' },
@@ -82,18 +97,12 @@ client.once('ready', async () => {
   const row2 = new ActionRowBuilder().addComponents(pcMenu);
 
   await channel.send({
-    content: `🎮 **SERVER ROLE GAMES!**
-
-📱 Mobile & 💻 PC dipisah
-
-Pilih role sesuai game kamu ya 👇`,
+    embeds: [embed],
     components: [row1, row2]
   });
-
-  console.log('Dropdown terkirim!');
 });
 
-// HANDLE ROLE
+// ROLE HANDLER
 client.on('interactionCreate', async interaction => {
   if (!interaction.isStringSelectMenu()) return;
 
@@ -128,24 +137,24 @@ client.on('interactionCreate', async interaction => {
     vl: '1488434562114785371'
   };
 
-  const selected = interaction.values[0];
-  const roleId = rolesMap[selected];
-  const role = interaction.guild.roles.cache.get(roleId);
-
-  if (!role) {
-    return interaction.reply({ content: 'Role tidak ditemukan!', ephemeral: true });
-  }
-
   const member = interaction.member;
 
-  if (member.roles.cache.has(roleId)) {
-    await member.roles.remove(role);
-    await interaction.reply({ content: `❌ ${role.name} dihapus`, ephemeral: true });
-  } else {
-    await member.roles.add(role);
-    await interaction.reply({ content: `✅ ${role.name} ditambahkan`, ephemeral: true });
+  for (const val of interaction.values) {
+    const roleId = rolesMap[val];
+    const role = interaction.guild.roles.cache.get(roleId);
+    if (!role) continue;
+
+    if (member.roles.cache.has(roleId)) {
+      await member.roles.remove(role);
+    } else {
+      await member.roles.add(role);
+    }
   }
+
+  await interaction.reply({
+    content: '✅ Role kamu berhasil diupdate!',
+    ephemeral: true
+  });
 });
 
-// LOGIN
 client.login(process.env.TOKEN);
