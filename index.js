@@ -21,7 +21,7 @@ client.once('ready', async () => {
 
   // EMBED
   const embed = new EmbedBuilder()
-.setColor('#2b2d31')
+.setColor('#FFD700')
 .setTitle('🎮 SERVER ROLE GAMES')
 .setDescription('Pilih role game kamu di dropdown bawah 🔥\n\n**📱 Mobile Games :**\n' +
 
