@@ -28,7 +28,7 @@ client.once('ready', async () => {
   iconURL: 'https://LINK-ICON-LU.png' // 🔥 GANTI
 })
 
-.setTitle('🎮 SERVER ROLE GAMES')
+.setTitle('ASOSIASI PLENGER')
 
 .setDescription(`
 ╔════════════════════╗
