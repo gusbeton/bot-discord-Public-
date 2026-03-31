@@ -1,68 +1,74 @@
-const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+require('dotenv').config();
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds]
 });
 
-// REGISTER SLASH COMMAND
-const commands = [
-  new SlashCommandBuilder()
-    .setName('rules')
-    .setDescription('Menampilkan rules server')
-].map(command => command.toJSON());
-
-const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
-
-// GANTI INI
-const CLIENT_ID = '1488224269543411742';
-
-(async () => {
-  try {
-    console.log('Registering slash command...');
-    await rest.put(
-      Routes.applicationCommands(CLIENT_ID),
-      { body: commands }
-    );
-    console.log('Slash command ready!');
-  } catch (error) {
-    console.error(error);
-  }
-})();
-
-client.once('ready', () => {
+// READY
+client.once('ready', async () => {
   console.log(`Login sebagai ${client.user.tag}`);
+
+  const commands = [
+    new SlashCommandBuilder()
+      .setName('rules')
+      .setDescription('Menampilkan rules server')
+  ];
+
+  await client.application.commands.set(commands);
+  console.log('Slash command ready!');
 });
 
+// COMMAND
 client.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === 'rules') {
+
     const embed = new EmbedBuilder()
-      .setTitle('📜 Server Ninja Rules!')
-      .setDescription('**Important**\n\nPastikan membaca dan memahami aturan dengan teliti.\nSelamat datang di server NINJA!')
-      .setColor(0x00ff00)
+      .setTitle('📜 𝘼𝙎𝙊𝙎𝙄𝘼𝙎𝙄 𝙋𝙇𝙀𝙉𝙂𝙀𝙍 𝙍𝙐𝙇𝙀𝙎')
+      .setDescription(
+        `**Welcome to ASSPLR Server!**
+
+Harap membaca dan memahami semua aturan berikut.
+Dengan masuk ke server ini, kamu dianggap setuju dengan semua rules yang berlaku.
+
+━━━━━━━━━━━━━━━━━━━━━━`
+      )
+      .setColor(0x2ecc71)
       .addFields(
         {
-          name: '📌 RULE 1 — Hormati Semua Member',
-          value: 'Perlakukan semua anggota dengan setara tanpa memandang apapun.'
+          name: '📌 𝑹𝑼𝑳𝑬 1 • Respect Everyone',
+          value: 'Hormati semua member tanpa terkecuali. Dilarang menghina, merendahkan, atau toxic terhadap siapapun.',
         },
         {
-          name: '💬 RULE 2 — Gunakan Bahasa yang Baik',
-          value: 'Hindari kata kasar, toxic, SARA, dan hal yang menyinggung.'
+          name: '💬 𝑹𝑼𝑳𝑬 2 • Proper Language',
+          value: 'Gunakan bahasa yang sopan. Dilarang berkata kasar, SARA, atau hal yang menyinggung.',
         },
         {
-          name: '🚫 RULE 3 — Dilarang Spam',
-          value: 'Jangan spam chat, emoji, link, atau hal tidak penting.'
+          name: '🚫 𝑹𝑼𝑳𝑬 3 • No Spamming',
+          value: 'Dilarang spam chat, emoji, sticker, atau link yang tidak relevan.',
         },
         {
-          name: '⚖️ RULE 4 — Ikuti Admin & Moderator',
-          value: 'Admin berhak mute/kick/ban sesuai aturan.'
+          name: '🔗 𝑹𝑼𝑳𝑬 4 • No Unauthorized Promotion',
+          value: 'Dilarang promosi tanpa izin dari admin/moderator.',
+        },
+        {
+          name: '⚖️ 𝑹𝑼𝑳𝑬 5 • Follow Staff Instructions',
+          value: 'Semua keputusan admin/mod bersifat final dan wajib dipatuhi.',
+        },
+        {
+          name: '🛡️ 𝑹𝑼𝑳𝑬 6 • Keep It Safe',
+          value: 'Dilarang mengirim konten NSFW, ilegal, atau berbahaya.',
         }
       )
-      .setFooter({ text: 'Server Ninja • Stay Respectful' });
+      .setFooter({
+        text: 'NINJA SERVER • Stay Respectful & Enjoy',
+      });
 
     await interaction.reply({ embeds: [embed] });
   }
 });
 
+// LOGIN
 client.login(process.env.TOKEN);
