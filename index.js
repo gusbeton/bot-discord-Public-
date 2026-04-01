@@ -9,11 +9,17 @@ const {
 } = require('discord.js');
 
 const {
-  joinVoiceChannel
+  joinVoiceChannel,
+  getVoiceConnection
 } = require('@discordjs/voice');
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
 });
 
 const CHANNEL_ID = '1488135944371572866';
@@ -94,79 +100,89 @@ client.once('ready', async () => {
   });
 });
 
-// 🎤 JOIN VOICE COMMAND
-client.on('interactionCreate', async interaction => {
-  if (interaction.isChatInputCommand()) {
-    if (interaction.commandName === 'join') {
-      const channel = interaction.member.voice.channel;
+// 🎤 COMMAND TANPA PREFIX (ketik: join / v / gas)
+client.on('messageCreate', async (message) => {
+  if (message.author.bot) return;
 
-      if (!channel) {
-        return interaction.reply({
-          content: '❌ Masuk voice dulu!',
-          ephemeral: true
-        });
-      }
+  const cmd = message.content.toLowerCase();
 
-      joinVoiceChannel({
-        channelId: channel.id,
-        guildId: channel.guild.id,
-        adapterCreator: channel.guild.voiceAdapterCreator
-      });
+  if (cmd === 'join' || cmd === 'v' || cmd === 'gas') {
+    const channel = message.member.voice.channel;
 
-      return interaction.reply('🎤 Bot masuk voice!');
-    }
-  }
-
-  // 🎮 ROLE DROPDOWN
-  if (interaction.isStringSelectMenu()) {
-    const rolesMap = {
-      among: '1488435375725740172',
-      aov: '1488435756350308443',
-      apexm: '1488434903732195418',
-      ff: '1488435095814803486',
-      gi: '1488435159198859304',
-      lolm: '1488435269081239623',
-      ml: '1488435375725740172',
-      pbm: '1488435629011374120',
-      pubgm: '1488435756350308443',
-      sausage: '1488435820560912434',
-      supers: '1488441075680153680',
-      stumble: '1488435872826130593',
-      hok: '1488436005139644426',
-      codm: '1488435039275319356',
-
-      apexl: '1488432911290994769',
-      cs2: '1488433170876600360',
-      dota2: '1488433456252850297',
-      ft: '1488433517049417728',
-      gtav: '1488433623588802630',
-      lolpc: '1488433735966920734',
-      mc: '1488433861905092668',
-      pb: '1488434230143881398',
-      pubg: '1488434320308965546',
-      r6: '1488434488064086117',
-      vl: '1488434562114785371'
-    };
-
-    const member = interaction.member;
-
-    for (const val of interaction.values) {
-      const roleId = rolesMap[val];
-      const role = interaction.guild.roles.cache.get(roleId);
-      if (!role) continue;
-
-      if (member.roles.cache.has(roleId)) {
-        await member.roles.remove(role);
-      } else {
-        await member.roles.add(role);
-      }
+    if (!channel) {
+      return message.reply('❌ Masuk voice dulu!');
     }
 
-    await interaction.reply({
-      content: '✅ Role updated!',
-      ephemeral: true
+    joinVoiceChannel({
+      channelId: channel.id,
+      guildId: channel.guild.id,
+      adapterCreator: channel.guild.voiceAdapterCreator
     });
+
+    return message.reply('🎤 Bot masuk voice!');
   }
+
+  // optional leave
+  if (cmd === 'leave') {
+    const connection = getVoiceConnection(message.guild.id);
+    if (connection) {
+      connection.destroy();
+      return message.reply('👋 Keluar dari VC');
+    }
+  }
+});
+
+// 🎮 ROLE DROPDOWN
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isStringSelectMenu()) return;
+
+  const rolesMap = {
+    among: '1488435375725740172',
+    aov: '1488435756350308443',
+    apexm: '1488434903732195418',
+    ff: '1488435095814803486',
+    gi: '1488435159198859304',
+    lolm: '1488435269081239623',
+    ml: '1488435375725740172',
+    pbm: '1488435629011374120',
+    pubgm: '1488435756350308443',
+    sausage: '1488435820560912434',
+    supers: '1488441075680153680',
+    stumble: '1488435872826130593',
+    hok: '1488436005139644426',
+    codm: '1488435039275319356',
+
+    apexl: '1488432911290994769',
+    cs2: '1488433170876600360',
+    dota2: '1488433456252850297',
+    ft: '1488433517049417728',
+    gtav: '1488433623588802630',
+    lolpc: '1488433735966920734',
+    mc: '1488433861905092668',
+    pb: '1488434230143881398',
+    pubg: '1488434320308965546',
+    r6: '1488434488064086117',
+    vl: '1488434562114785371'
+  };
+
+  const member = interaction.member;
+
+  for (const val of interaction.values) {
+    const roleId = rolesMap[val];
+    const role = interaction.guild.roles.cache.get(roleId);
+    if (!role) continue;
+
+    if (member.roles.cache.has(roleId)) {
+      await member.roles.remove(role);
+    } else {
+      await member.roles.add(role);
+    }
+  }
+
+  await interaction.reply({
+    content: '✅ Role updated!',
+    ephemeral: true
+  });
 });
 
 client.login(process.env.TOKEN);
