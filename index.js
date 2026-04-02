@@ -43,7 +43,7 @@ client.once('ready', async () => {
     .setDescription(`✨ Pilih role game kamu di dropdown bawah 🔥`)
     .setImage('https://cdn.discordapp.com/attachments/1487590787284734143/1488478860394631329/p.png')
     .setFooter({
-      text: 'Asosiasi Plenger • Gaming Role System'
+      text: 'Copyright ©2018 - ASSPLR | Gaming Role System'
     })
     .setTimestamp();
 
@@ -64,7 +64,7 @@ client.once('ready', async () => {
     .setCustomId('mobile2')
     .setPlaceholder('📱 Mobile Games (2)')
     .addOptions([
-      { label: 'Point Blank Mobile', value: 'pbm' },
+      { label: 'Roblox', value: 'rbx1' },
       { label: 'PUBG Mobile', value: 'pubgm' },
       { label: 'Sausage Man', value: 'sausage' },
       { label: 'Super Sus', value: 'supers' },
@@ -144,7 +144,7 @@ client.on('interactionCreate', async interaction => {
     gi: '1488435159198859304',
     lolm: '1488435269081239623',
     ml: '1488435375725740172',
-    pbm: '1488435629011374120',
+    roblox: '1488435629011374120',
     pubgm: '1488435756350308443',
     sausage: '1488435820560912434',
     supers: '1488441075680153680',
