@@ -134,7 +134,7 @@ client.on('messageCreate', async (message) => {
   }
 });
 
-// 🎮 ROLE SYSTEM
+// 🎮 ROLE SYSTEM (VERSI UPGRADE EMBED)
 client.on('interactionCreate', async interaction => {
   if (!interaction.isStringSelectMenu()) return;
 
@@ -168,6 +168,8 @@ client.on('interactionCreate', async interaction => {
   };
 
   const member = interaction.member;
+  const addedRoles = [];
+  const removedRoles = [];
 
   for (const val of interaction.values) {
     const roleId = rolesMap[val];
@@ -176,13 +178,30 @@ client.on('interactionCreate', async interaction => {
 
     if (member.roles.cache.has(roleId)) {
       await member.roles.remove(role);
+      removedRoles.push(role.name);
     } else {
       await member.roles.add(role);
+      addedRoles.push(role.name);
     }
   }
 
+  const embed = new EmbedBuilder()
+    .setColor('#57F287')
+    .setAuthor({
+      name: interaction.guild.name,
+      iconURL: interaction.guild.iconURL()
+    })
+    .setDescription(`
+✅ **Role Updated**
+
+${addedRoles.length ? `✔️ Added: ${addedRoles.join(', ')}` : ''}
+${removedRoles.length ? `❌ Removed: ${removedRoles.join(', ')}` : ''}
+`)
+    .setFooter({ text: 'Role System' })
+    .setTimestamp();
+
   await interaction.reply({
-    content: '✅ Role updated!',
+    embeds: [embed],
     ephemeral: true
   });
 });
