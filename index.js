@@ -47,47 +47,50 @@ client.once('ready', async () => {
     })
     .setTimestamp();
 
+  // 📱 MOBILE 1
   const mobile1 = new StringSelectMenuBuilder()
     .setCustomId('mobile1')
     .setPlaceholder('📱 Mobile Games (1)')
     .addOptions([
-      { label: 'Among Us', value: 'among' },
-      { label: 'AOV', value: 'aov' },
-      { label: 'Apex Mobile', value: 'apexm' },
-      { label: 'Free Fire', value: 'ff' },
-      { label: 'Genshin', value: 'gi' },
-      { label: 'League Mobile', value: 'lolm' },
-      { label: 'Mobile Legends', value: 'ml' }
+      { label: 'Among Us', value: 'among', emoji: { id: '1488232855724101853' } },
+      { label: 'AOV', value: 'aov', emoji: { id: '1488232953292001452' } },
+      { label: 'Apex Mobile', value: 'apexm', emoji: { id: '1488233017087492167' } },
+      { label: 'Free Fire', value: 'ff', emoji: { id: '1488233144732876820' } },
+      { label: 'Genshin', value: 'gi', emoji: { id: '1488233389638156391' } },
+      { label: 'League Mobile', value: 'lolm', emoji: { id: '1488233476292608171' } },
+      { label: 'Mobile Legends', value: 'ml', emoji: { id: '1488225517113966673' } }
     ]);
 
+  // 📱 MOBILE 2
   const mobile2 = new StringSelectMenuBuilder()
     .setCustomId('mobile2')
     .setPlaceholder('📱 Mobile Games (2)')
     .addOptions([
-      { label: 'Roblox', value: 'rbx1' },
-      { label: 'PUBG Mobile', value: 'pubgm' },
-      { label: 'Sausage Man', value: 'sausage' },
-      { label: 'Super Sus', value: 'supers' },
-      { label: 'Stumble Guys', value: 'stumble' },
-      { label: 'Honor of Kings', value: 'hok' },
-      { label: 'COD Mobile', value: 'codm' }
+      { label: 'Roblox', value: 'roblox', emoji: { id: '1488233568042750144' } },
+      { label: 'PUBG Mobile', value: 'pubgm', emoji: { id: '1488233818153418824' } },
+      { label: 'Sausage Man', value: 'sausage', emoji: { id: '1488233909241118721' } },
+      { label: 'Super Sus', value: 'supers', emoji: { id: '1488233979168559257' } },
+      { label: 'Stumble Guys', value: 'stumble', emoji: { id: '1488234053906989126' } },
+      { label: 'Honor of Kings', value: 'hok', emoji: { id: '1488234145787154653' } },
+      { label: 'COD Mobile', value: 'codm', emoji: { id: '1488233107642515496' } }
     ]);
 
+  // 💻 PC
   const pc = new StringSelectMenuBuilder()
     .setCustomId('pc')
     .setPlaceholder('💻 PC Games')
     .addOptions([
-      { label: 'Apex Legends', value: 'apexl' },
-      { label: 'CS2', value: 'cs2' },
-      { label: 'Dota 2', value: 'dota2' },
-      { label: 'Fortnite', value: 'ft' },
-      { label: 'GTA V', value: 'gtav' },
-      { label: 'League PC', value: 'lolpc' },
-      { label: 'Minecraft', value: 'mc' },
-      { label: 'Point Blank', value: 'pb' },
-      { label: 'PUBG PC', value: 'pubg' },
-      { label: 'R6', value: 'r6' },
-      { label: 'Valorant', value: 'vl' }
+      { label: 'Apex Legends', value: 'apexl', emoji: { id: '1488234574109610096' } },
+      { label: 'CS2', value: 'cs2', emoji: { id: '1488229246441754744' } },
+      { label: 'Dota 2', value: 'dota2', emoji: { id: '1488225450865066064' } },
+      { label: 'Fortnite', value: 'ft', emoji: { id: '1488229574780391434' } },
+      { label: 'GTA V', value: 'gtav', emoji: { id: '1488229820977516666' } },
+      { label: 'League PC', value: 'lolpc', emoji: { id: '1488230038808821851' } },
+      { label: 'Minecraft', value: 'mc', emoji: { id: '1488230360260284488' } },
+      { label: 'Point Blank', value: 'pb', emoji: { id: '1488230516355240037' } },
+      { label: 'PUBG PC', value: 'pubg', emoji: { id: '1488230934602973325' } },
+      { label: 'R6', value: 'r6', emoji: { id: '1488231298135752748' } },
+      { label: 'Valorant', value: 'vl', emoji: { id: '1488225389724700724' } }
     ]);
 
   const row1 = new ActionRowBuilder().addComponents(mobile1);
@@ -100,7 +103,7 @@ client.once('ready', async () => {
   });
 });
 
-// 🎤 COMMAND TANPA PREFIX (ketik: join / v / gas)
+// 🎤 COMMAND TANPA PREFIX
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
@@ -122,7 +125,6 @@ client.on('messageCreate', async (message) => {
     return message.reply('🎤 Bot masuk voice!');
   }
 
-  // optional leave
   if (cmd === 'leave') {
     const connection = getVoiceConnection(message.guild.id);
     if (connection) {
@@ -132,7 +134,7 @@ client.on('messageCreate', async (message) => {
   }
 });
 
-// 🎮 ROLE DROPDOWN
+// 🎮 ROLE SYSTEM
 client.on('interactionCreate', async interaction => {
   if (!interaction.isStringSelectMenu()) return;
 
