@@ -40,7 +40,7 @@ client.once('ready', async () => {
       name: 'BETLEHEM',
       iconURL: 'https://media.discordapp.net/attachments/1487590787284734143/1492050545219862598/bthl.png'
     })
-    .setTitle('BETLEHEM')
+    .setTitle('BETLEHEM ROLE GAMING')
     .setDescription(`✨ Pilih role game kamu di dropdown bawah 🔥`)
     .setImage('https://media.discordapp.net/attachments/1487590787284734143/1492050006507651173/Black_and_White_Grunge_Gaming_Youtube_Banner.png')
     .setFooter({
