@@ -36,14 +36,14 @@ client.once('ready', async () => {
   const embed = new EmbedBuilder()
     .setColor('#FFD700')
     .setAuthor({
-      name: 'Asosiasi Plenger',
-      iconURL: 'https://LINK-ICON-LU.png'
+      name: 'BETLEHEM',
+      iconURL: 'https://media.discordapp.net/attachments/1487590787284734143/1492050545219862598/bthl.png?ex=69d9ebda&is=69d89a5a&hm=a478cf03f8b56a08eac47c345a07736bfe7ca716c5424ffe34e7775778708e2a&=&format=webp&quality=lossless&width=960&height=960'
     })
-    .setTitle('ASOSIASI PLENGER')
+    .setTitle('BETLEHEM')
     .setDescription(`✨ Pilih role game kamu di dropdown bawah 🔥`)
-    .setImage('https://cdn.discordapp.com/attachments/1487590787284734143/1488478860394631329/p.png')
+    .setImage('https://media.discordapp.net/attachments/1487590787284734143/1492050006507651173/Black_and_White_Grunge_Gaming_Youtube_Banner.png?ex=69d9eb5a&is=69d899da&hm=b18a8d555a48fa0de25f4258fd6dbc26e42dc15fdd61d518a790d458662e696f&=&format=webp&quality=lossless&width=1522&height=856')
     .setFooter({
-      text: 'Copyright ©2018 - ASSPLR | Gaming Role System'
+      text: 'Copyright ©2018 - BTHL | Gaming Role System'
     })
     .setTimestamp();
 
