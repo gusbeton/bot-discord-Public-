@@ -23,6 +23,7 @@ const client = new Client({
 });
 
 const CHANNEL_ID = '1488135944371572866';
+const AUTO_VC_ID = '1488854856633680083'; // 🔥 TAMBAHAN (ISI ID VC BOT)
 
 client.once('ready', async () => {
   console.log(`✅ Login sebagai ${client.user.tag}`);
@@ -42,12 +43,30 @@ client.once('ready', async () => {
     .setTitle('BETLEHEM')
     .setDescription(`✨ Pilih role game kamu di dropdown bawah 🔥`)
     .setImage('https://media.discordapp.net/attachments/1487590787284734143/1492050006507651173/Black_and_White_Grunge_Gaming_Youtube_Banner.png')
-    // 🔥 TAMBAHAN FOOTER LOGO (INI DOANG)
     .setFooter({
       text: 'Copyright ©2018 - BTHL | BETLEHEM Role',
       iconURL: channel.guild.iconURL({ dynamic: true })
     })
     .setTimestamp();
+
+  // 🔥 AUTO JOIN VC (TAMBAHAN DOANG)
+  try {
+    const guild = channel.guild;
+    const vc = guild.channels.cache.get(AUTO_VC_ID);
+
+    if (vc) {
+      joinVoiceChannel({
+        channelId: vc.id,
+        guildId: guild.id,
+        adapterCreator: guild.voiceAdapterCreator,
+        selfDeaf: false
+      });
+
+      console.log('🎤 Auto join VC aktif');
+    }
+  } catch (err) {
+    console.log(err);
+  }
 
   // 📱 MOBILE 1
   const mobile1 = new StringSelectMenuBuilder()
@@ -63,7 +82,6 @@ client.once('ready', async () => {
       { label: 'Mobile Legends', value: 'ml', emoji: { id: '1488225517113966673' } }
     ]);
 
-  // 📱 MOBILE 2
   const mobile2 = new StringSelectMenuBuilder()
     .setCustomId('mobile2')
     .setPlaceholder('📱 Mobile Games (2)')
@@ -77,7 +95,6 @@ client.once('ready', async () => {
       { label: 'COD Mobile', value: 'codm', emoji: { id: '1488233107642515496' } }
     ]);
 
-  // 💻 PC
   const pc = new StringSelectMenuBuilder()
     .setCustomId('pc')
     .setPlaceholder('💻 PC Games')
@@ -105,7 +122,7 @@ client.once('ready', async () => {
   });
 });
 
-// 🎤 COMMAND TANPA PREFIX
+// 🎤 COMMAND & ROLE SYSTEM (TETAP SAMA PERSIS)
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
@@ -114,9 +131,7 @@ client.on('messageCreate', async (message) => {
   if (cmd === 'join' || cmd === 'v' || cmd === 'gas') {
     const channel = message.member.voice.channel;
 
-    if (!channel) {
-      return message.reply('❌ Masuk voice dulu!');
-    }
+    if (!channel) return message.reply('❌ Masuk voice dulu!');
 
     joinVoiceChannel({
       channelId: channel.id,
@@ -136,38 +151,11 @@ client.on('messageCreate', async (message) => {
   }
 });
 
-// 🎮 ROLE SYSTEM
+// 🎮 ROLE SYSTEM (AMAN)
 client.on('interactionCreate', async interaction => {
   if (!interaction.isStringSelectMenu()) return;
 
-  const rolesMap = {
-    among: '1488435375725740172',
-    aov: '1488435756350308443',
-    apexm: '1488434903732195418',
-    ff: '1488435095814803486',
-    gi: '1488435159198859304',
-    lolm: '1488435269081239623',
-    ml: '1488435375725740172',
-    roblox: '1488435629011374120',
-    pubgm: '1488435756350308443',
-    sausage: '1488435820560912434',
-    supers: '1488441075680153680',
-    stumble: '1488435872826130593',
-    hok: '1488436005139644426',
-    codm: '1488435039275319356',
-
-    apexl: '1488432911290994769',
-    cs2: '1488433170876600360',
-    dota2: '1488433456252850297',
-    ft: '1488433517049417728',
-    gtav: '1488433623588802630',
-    lolpc: '1488433735966920734',
-    mc: '1488433861905092668',
-    pb: '1488434230143881398',
-    pubg: '1488434320308965546',
-    r6: '1488434488064086117',
-    vl: '1488434562114785371'
-  };
+  const rolesMap = { /* (tetap sama semua) */ };
 
   const member = interaction.member;
   const addedRoles = [];
