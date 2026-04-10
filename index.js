@@ -44,7 +44,7 @@ client.once('ready', async () => {
     .setImage('https://media.discordapp.net/attachments/1487590787284734143/1492050006507651173/Black_and_White_Grunge_Gaming_Youtube_Banner.png')
     // 🔥 TAMBAHAN FOOTER LOGO (INI DOANG)
     .setFooter({
-      text: 'Copyright ©2018 - BTHL | Gaming Role System',
+      text: 'Copyright ©2018 - BTHL | BETLEHEM Role',
       iconURL: channel.guild.iconURL({ dynamic: true })
     })
     .setTimestamp();
