@@ -23,7 +23,29 @@ const client = new Client({
 });
 
 const CHANNEL_ID = '1488135944371572866';
-const AUTO_VC_ID = '1488854856633680083'; // 🔥 TAMBAHAN (ISI ID VC BOT)
+const AUTO_VC_ID = '1488854856633680083';
+
+// 🔥 FUNCTION AUTO JOIN
+async function autoJoinVC(client) {
+  try {
+    const guild = client.guilds.cache.first();
+    if (!guild) return console.log('❌ Guild tidak ditemukan');
+
+    const vc = guild.channels.cache.get(AUTO_VC_ID);
+    if (!vc) return console.log('❌ VC tidak ditemukan');
+
+    joinVoiceChannel({
+      channelId: vc.id,
+      guildId: guild.id,
+      adapterCreator: guild.voiceAdapterCreator,
+      selfDeaf: false
+    });
+
+    console.log('🎤 Auto join VC aktif');
+  } catch (err) {
+    console.log('❌ Error auto join:', err);
+  }
+}
 
 client.once('ready', async () => {
   console.log(`✅ Login sebagai ${client.user.tag}`);
@@ -49,24 +71,10 @@ client.once('ready', async () => {
     })
     .setTimestamp();
 
-  // 🔥 AUTO JOIN VC (TAMBAHAN DOANG)
-  try {
-    const guild = channel.guild;
-    const vc = guild.channels.cache.get(AUTO_VC_ID);
-
-    if (vc) {
-      joinVoiceChannel({
-        channelId: vc.id,
-        guildId: guild.id,
-        adapterCreator: guild.voiceAdapterCreator,
-        selfDeaf: false
-      });
-
-      console.log('🎤 Auto join VC aktif');
-    }
-  } catch (err) {
-    console.log(err);
-  }
+  // 🔥 AUTO JOIN (DELAY BIAR STABIL)
+  setTimeout(() => {
+    autoJoinVC(client);
+  }, 3000);
 
   // 📱 MOBILE 1
   const mobile1 = new StringSelectMenuBuilder()
@@ -122,7 +130,17 @@ client.once('ready', async () => {
   });
 });
 
-// 🎤 COMMAND & ROLE SYSTEM (TETAP SAMA PERSIS)
+// 🔥 AUTO REJOIN KALAU KEKELUAR
+client.on('voiceStateUpdate', (oldState, newState) => {
+  const botId = client.user.id;
+
+  if (oldState.id === botId && oldState.channelId && !newState.channelId) {
+    console.log('⚠️ Bot keluar dari VC, mencoba join ulang...');
+    setTimeout(() => autoJoinVC(client), 3000);
+  }
+});
+
+// 🎤 COMMAND VC (TETAP)
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
@@ -151,11 +169,11 @@ client.on('messageCreate', async (message) => {
   }
 });
 
-// 🎮 ROLE SYSTEM (AMAN)
+// 🎮 ROLE SYSTEM (TETAP)
 client.on('interactionCreate', async interaction => {
   if (!interaction.isStringSelectMenu()) return;
 
-  const rolesMap = { /* (tetap sama semua) */ };
+  const rolesMap = { /* tetap sama */ };
 
   const member = interaction.member;
   const addedRoles = [];
