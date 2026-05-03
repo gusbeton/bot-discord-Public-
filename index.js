@@ -25,7 +25,6 @@ const client = new Client({
 const CHANNEL_ID = '1488135944371572866';
 const AUTO_VC_ID = '1488854856633680083';
 
-
 // 🔥 AUTO JOIN FUNCTION
 async function autoJoinVC(client) {
   try {
@@ -56,7 +55,6 @@ client.once('ready', async () => {
   const messages = await channel.messages.fetch({ limit: 10 });
   const botMessage = messages.find(m => m.author.id === client.user.id);
 
-  // 🔥 AUTO JOIN DELAY
   setTimeout(() => {
     autoJoinVC(client);
   }, 3000);
@@ -131,7 +129,6 @@ client.once('ready', async () => {
   });
 });
 
-
 // 🔥 AUTO REJOIN
 client.on('voiceStateUpdate', (oldState, newState) => {
   const botId = client.user.id;
@@ -141,7 +138,6 @@ client.on('voiceStateUpdate', (oldState, newState) => {
     setTimeout(() => autoJoinVC(client), 3000);
   }
 });
-
 
 // 🎤 COMMAND VC
 client.on('messageCreate', async (message) => {
@@ -172,8 +168,7 @@ client.on('messageCreate', async (message) => {
   }
 });
 
-
-// 🎮 ROLE SYSTEM FINAL (TINGGAL ISI ID)
+// 🎮 ROLE SYSTEM + EMBED
 client.on('interactionCreate', async interaction => {
   if (!interaction.isStringSelectMenu()) return;
 
@@ -221,8 +216,23 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
+  // 🔥 EMBED REPLY
+  const embed = new EmbedBuilder()
+    .setColor('#57F287')
+    .setAuthor({
+      name: 'BETLEHEM',
+      iconURL: interaction.guild.iconURL({ dynamic: true })
+    })
+    .setDescription('✅ **Role Updated**')
+    .setFooter({
+      text: `Role System • ${new Date().toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit'
+      })}`
+    });
+
   await interaction.reply({
-    content: '✅ Role berhasil diupdate!',
+    embeds: [embed],
     ephemeral: true
   });
 });
