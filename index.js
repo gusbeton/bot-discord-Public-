@@ -23,29 +23,7 @@ const client = new Client({
 });
 
 const CHANNEL_ID = '1488135944371572866';
-const AUTO_VC_ID = '1488854856633680083';
-
-// 🔥 FUNCTION AUTO JOIN
-async function autoJoinVC(client) {
-  try {
-    const guild = client.guilds.cache.first();
-    if (!guild) return console.log('❌ Guild tidak ditemukan');
-
-    const vc = guild.channels.cache.get(AUTO_VC_ID);
-    if (!vc) return console.log('❌ VC tidak ditemukan');
-
-    joinVoiceChannel({
-      channelId: vc.id,
-      guildId: guild.id,
-      adapterCreator: guild.voiceAdapterCreator,
-      selfDeaf: false
-    });
-
-    console.log('🎤 Auto join VC aktif');
-  } catch (err) {
-    console.log('❌ Error auto join:', err);
-  }
-}
+const AUTO_VC_ID = '1488854856633680083'; // 🔥 TAMBAHAN (ISI ID VC BOT)
 
 client.once('ready', async () => {
   console.log(`✅ Login sebagai ${client.user.tag}`);
@@ -71,17 +49,31 @@ client.once('ready', async () => {
     })
     .setTimestamp();
 
-  // 🔥 AUTO JOIN (DELAY BIAR STABIL)
-  setTimeout(() => {
-    autoJoinVC(client);
-  }, 3000);
+  // 🔥 AUTO JOIN VC (TAMBAHAN DOANG)
+  try {
+    const guild = channel.guild;
+    const vc = guild.channels.cache.get(AUTO_VC_ID);
+
+    if (vc) {
+      joinVoiceChannel({
+        channelId: vc.id,
+        guildId: guild.id,
+        adapterCreator: guild.voiceAdapterCreator,
+        selfDeaf: false
+      });
+
+      console.log('🎤 Auto join VC aktif');
+    }
+  } catch (err) {
+    console.log(err);
+  }
 
   // 📱 MOBILE 1
   const mobile1 = new StringSelectMenuBuilder()
     .setCustomId('mobile1')
     .setPlaceholder('📱 Mobile Games (1)')
     .addOptions([
-      { label: 'Among Us', value: 'among', emoji: { id: '1488434644016959571' } },
+      { label: 'Among Us', value: 'among', emoji: { id: '1488232855724101853' } },
       { label: 'AOV', value: 'aov', emoji: { id: '1488232953292001452' } },
       { label: 'Apex Mobile', value: 'apexm', emoji: { id: '1488233017087492167' } },
       { label: 'Free Fire', value: 'ff', emoji: { id: '1488233144732876820' } },
@@ -130,17 +122,7 @@ client.once('ready', async () => {
   });
 });
 
-// 🔥 AUTO REJOIN KALAU KEKELUAR
-client.on('voiceStateUpdate', (oldState, newState) => {
-  const botId = client.user.id;
-
-  if (oldState.id === botId && oldState.channelId && !newState.channelId) {
-    console.log('⚠️ Bot keluar dari VC, mencoba join ulang...');
-    setTimeout(() => autoJoinVC(client), 3000);
-  }
-});
-
-// 🎤 COMMAND VC (TETAP)
+// 🎤 COMMAND & ROLE SYSTEM (TETAP SAMA PERSIS)
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
@@ -169,11 +151,11 @@ client.on('messageCreate', async (message) => {
   }
 });
 
-// 🎮 ROLE SYSTEM (TETAP)
+// 🎮 ROLE SYSTEM (AMAN)
 client.on('interactionCreate', async interaction => {
   if (!interaction.isStringSelectMenu()) return;
 
-  const rolesMap = { /* tetap sama */ };
+  const rolesMap = { /* (tetap sama semua) */ };
 
   const member = interaction.member;
   const addedRoles = [];
