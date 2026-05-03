@@ -225,7 +225,7 @@ client.on('interactionCreate', async interaction => {
     })
     .setDescription('✅ **Role Updated**')
     .setFooter({
-      text: `Role System • ${new Date().toLocaleTimeString('id-ID', {
+      text: `BETLEHEM • Copyright ©️2018 - BTHL • ${new Date().toLocaleTimeString('id-ID', {
         hour: '2-digit',
         minute: '2-digit'
       })}`
