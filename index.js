@@ -23,7 +23,30 @@ const client = new Client({
 });
 
 const CHANNEL_ID = '1488135944371572866';
-const AUTO_VC_ID = '1488854856633680083'; // 🔥 TAMBAHAN (ISI ID VC BOT)
+const AUTO_VC_ID = '1488854856633680083';
+
+
+// 🔥 AUTO JOIN FUNCTION
+async function autoJoinVC(client) {
+  try {
+    const guild = client.guilds.cache.first();
+    if (!guild) return console.log('❌ Guild tidak ditemukan');
+
+    const vc = guild.channels.cache.get(AUTO_VC_ID);
+    if (!vc) return console.log('❌ VC tidak ditemukan');
+
+    joinVoiceChannel({
+      channelId: vc.id,
+      guildId: guild.id,
+      adapterCreator: guild.voiceAdapterCreator,
+      selfDeaf: false
+    });
+
+    console.log('🎤 Auto join VC aktif');
+  } catch (err) {
+    console.log('❌ Error auto join:', err);
+  }
+}
 
 client.once('ready', async () => {
   console.log(`✅ Login sebagai ${client.user.tag}`);
@@ -32,6 +55,12 @@ client.once('ready', async () => {
 
   const messages = await channel.messages.fetch({ limit: 10 });
   const botMessage = messages.find(m => m.author.id === client.user.id);
+
+  // 🔥 AUTO JOIN DELAY
+  setTimeout(() => {
+    autoJoinVC(client);
+  }, 3000);
+
   if (botMessage) return;
 
   const embed = new EmbedBuilder()
@@ -49,26 +78,6 @@ client.once('ready', async () => {
     })
     .setTimestamp();
 
-  // 🔥 AUTO JOIN VC (TAMBAHAN DOANG)
-  try {
-    const guild = channel.guild;
-    const vc = guild.channels.cache.get(AUTO_VC_ID);
-
-    if (vc) {
-      joinVoiceChannel({
-        channelId: vc.id,
-        guildId: guild.id,
-        adapterCreator: guild.voiceAdapterCreator,
-        selfDeaf: false
-      });
-
-      console.log('🎤 Auto join VC aktif');
-    }
-  } catch (err) {
-    console.log(err);
-  }
-
-  // 📱 MOBILE 1
   const mobile1 = new StringSelectMenuBuilder()
     .setCustomId('mobile1')
     .setPlaceholder('📱 Mobile Games (1)')
@@ -122,7 +131,19 @@ client.once('ready', async () => {
   });
 });
 
-// 🎤 COMMAND & ROLE SYSTEM (TETAP SAMA PERSIS)
+
+// 🔥 AUTO REJOIN
+client.on('voiceStateUpdate', (oldState, newState) => {
+  const botId = client.user.id;
+
+  if (oldState.id === botId && oldState.channelId && !newState.channelId) {
+    console.log('⚠️ Bot keluar VC, rejoin...');
+    setTimeout(() => autoJoinVC(client), 3000);
+  }
+});
+
+
+// 🎤 COMMAND VC
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
@@ -151,47 +172,57 @@ client.on('messageCreate', async (message) => {
   }
 });
 
-// 🎮 ROLE SYSTEM (AMAN)
+
+// 🎮 ROLE SYSTEM FINAL (TINGGAL ISI ID)
 client.on('interactionCreate', async interaction => {
   if (!interaction.isStringSelectMenu()) return;
 
-  const rolesMap = { /* (tetap sama semua) */ };
+  const rolesMap = {
+    among: '1488434644016959571',
+    aov: '1488434719975669811',
+    apexm: '1488434903732195418',
+    ff: '1488435095814803486',
+    gi: '1488435159198859304',
+    lolm: '1488435269081239623',
+    ml: '1488435375725740172',
+    roblox: '1488435629011374120',
+    pubgm: '1488435756350308443',
+    sausage: '1488435820560912434',
+    supers: '1488441075680153680',
+    stumble: '1488435872826130593',
+    hok: '1488436005139644426',
+    codm: '1488435039275319356',
+    apexl: '1488432911290994769',
+    cs2: '1488433170876600360',
+    dota2: '1488433456252850297',
+    ft: '1488433517049417728',
+    gtav: '1488433623588802630',
+    lolpc: '1488433735966920734',
+    mc: '1488433861905092668',
+    pb: '1488434230143881398',
+    pubg: '1488434320308965546',
+    r6: '1488434488064086117',
+    vl: '1488434562114785371'
+  };
 
   const member = interaction.member;
-  const addedRoles = [];
-  const removedRoles = [];
 
   for (const val of interaction.values) {
     const roleId = rolesMap[val];
+    if (!roleId) continue;
+
     const role = interaction.guild.roles.cache.get(roleId);
     if (!role) continue;
 
     if (member.roles.cache.has(roleId)) {
       await member.roles.remove(role);
-      removedRoles.push(role.name);
     } else {
       await member.roles.add(role);
-      addedRoles.push(role.name);
     }
   }
 
-  const embed = new EmbedBuilder()
-    .setColor('#57F287')
-    .setAuthor({
-      name: interaction.guild.name,
-      iconURL: interaction.guild.iconURL()
-    })
-    .setDescription(`
-✅ **Role Updated**
-
-${addedRoles.length ? `✔️ Added: ${addedRoles.join(', ')}` : ''}
-${removedRoles.length ? `❌ Removed: ${removedRoles.join(', ')}` : ''}
-`)
-    .setFooter({ text: 'Role System' })
-    .setTimestamp();
-
   await interaction.reply({
-    embeds: [embed],
+    content: '✅ Role berhasil diupdate!',
     ephemeral: true
   });
 });
