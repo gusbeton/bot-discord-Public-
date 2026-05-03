@@ -81,7 +81,7 @@ client.once('ready', async () => {
     .setCustomId('mobile1')
     .setPlaceholder('📱 Mobile Games (1)')
     .addOptions([
-      { label: 'Among Us', value: 'among', emoji: { id: '1488232855724101853' } },
+      { label: 'Among Us', value: 'among', emoji: { id: '1488434644016959571' } },
       { label: 'AOV', value: 'aov', emoji: { id: '1488232953292001452' } },
       { label: 'Apex Mobile', value: 'apexm', emoji: { id: '1488233017087492167' } },
       { label: 'Free Fire', value: 'ff', emoji: { id: '1488233144732876820' } },
